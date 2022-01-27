@@ -9,7 +9,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as express from 'express';
 import { logger } from './middleware/logger.middleware';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
+import { HttpExceptionFilter } from './filter/http-exception.filter';
+import { AllExceptionsFilter } from './filter/any-exception.filter';
 
 const allowRoute = ['/api/user/login'];
 
@@ -38,10 +42,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(express.json()); // For parsing application/json
+  app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+
   // 暂时不引用全局守卫，先通过控制器局部控制
   // app.useGlobalGuards(new JwtAuthGuard());
   app.use(logger);
+  // 使用全局拦截器打印出参
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.setGlobalPrefix('api'); // 全局路由前缀
+  // AllExceptionsFilter 要在 HttpExceptionFilter 的上面，否则 HttpExceptionFilter 就不生效了，全被 AllExceptionsFilter 捕获了。
+  app.useGlobalFilters(new AllExceptionsFilter());
+  // 过滤处理 HTTP 异常
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(9998);
 }
 bootstrap();
