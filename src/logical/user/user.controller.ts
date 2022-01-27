@@ -1,7 +1,8 @@
 import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from '../auth/auth.service';
-import { UserService } from './user.service';
+import { AuthService } from 'src/logical/auth/auth.service';
+import { UserService } from 'src/logical/user/user.service';
+import { NoAuth } from 'src/utils/unAuth';
 import { Request } from 'express';
 
 interface RequestWithUserInfo extends Request {
