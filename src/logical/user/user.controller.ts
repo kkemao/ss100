@@ -1,14 +1,24 @@
-import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/logical/auth/auth.service';
 import { UserService } from 'src/logical/user/user.service';
-import { NoAuth } from 'src/utils/unAuth';
 import { Request } from 'express';
+import { ValidationPipe } from 'src/pipe/validation.pipe';
+import { RegisterInfoDTO } from 'src/logical/user/user.dto'; // 引入 DTO
 
 interface RequestWithUserInfo extends Request {
   user: any;
 }
 
+@UseGuards(AuthGuard('jwt')) // 使用 'JWT' 进行验证
 @Controller('user')
 export class UserController {
   constructor(
@@ -21,40 +31,14 @@ export class UserController {
     return this.userService.findOne(body.username);
   }
 
-  @Get('find-one')
-  findOnes() {
-    return this.userService.findOneGet();
-  }
-
-  @UseGuards(AuthGuard('jwt')) // 使用 'JWT' 进行验证
+  @UsePipes(new ValidationPipe()) // 使用管道验证
   @Post('register')
-  async register(@Req() request: RequestWithUserInfo, @Body() body: any) {
+  async register(
+    @Req() request: RequestWithUserInfo,
+    @Body() body: RegisterInfoDTO,
+  ) {
     //   拿到jwt里面保存的用户信息
     // console.log('zkf-request-user', request.user);
     return await this.userService.register(body);
-  }
-
-  // JWT验证 - Step 1: 用户请求登录
-  @Post('login')
-  async login(@Body() loginParmas: any) {
-    // console.log('JWT验证 - Step 1: 用户请求登录');
-    const authResult = await this.authService.validateUser(
-      loginParmas.accountName,
-      loginParmas.password,
-    );
-    switch (authResult.code) {
-      case 1:
-        return this.authService.certificate(authResult.user);
-      case 2:
-        return {
-          code: 600,
-          msg: `账号或密码不正确`,
-        };
-      default:
-        return {
-          code: 600,
-          msg: `查无此人`,
-        };
-    }
   }
 }

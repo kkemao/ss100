@@ -23,7 +23,6 @@ export class LoggerMiddleware implements NestMiddleware {
 
 // 函数式中间件
 export function logger(req: Request, res: Response, next: () => any) {
-  console.log('zkf', req);
   const code = res.statusCode; // 响应状态码
   next();
   // 组装日志信息

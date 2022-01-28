@@ -22,25 +22,6 @@ export class UserService {
       return void 0;
     }
   }
-  async findOneGet(): Promise<any> {
-    const sql = `SELECT * FROM t_user`;
-    try {
-      const res = await sequelize.query(sql, {
-        type: Sequelize.QueryTypes.SELECT, // 查询方式
-        raw: true, // 是否使用数组组装的方式展示结果
-      });
-      return {
-        code: 200, // 返回状态码，可自定义
-        data: res || [],
-        msg: 'Success',
-      };
-    } catch (error) {
-      return {
-        code: 503,
-        msg: `Service error: ${error}`,
-      };
-    }
-  }
   /**
    * 注册
    * @param requestBody 请求体
