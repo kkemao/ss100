@@ -8,7 +8,7 @@ export class RegisterInfoDTO {
   @IsNotEmpty({ message: '重复密码不能为空' })
   readonly repassword: string;
   @IsNotEmpty({ message: '手机号不能为空' })
-  @IsString()
+  @IsString({ message: '手机号不能为string' })
   readonly mobile: string;
   readonly role?: string | number;
 }

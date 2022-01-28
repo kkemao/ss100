@@ -27,7 +27,7 @@ export class UserService {
    * @param requestBody 请求体
    */
   async register(requestBody: any): Promise<any> {
-    const { accountName, password, repassword, mobile } = requestBody;
+    const { accountName, password, repassword, mobile, role } = requestBody;
     if (password !== repassword) {
       return {
         code: 400,
@@ -45,11 +45,11 @@ export class UserService {
     const hashPwd = encryptPassword(password, salt); // 加密密码
     const registerSQL = `
     INSERT INTO t_user 
-        (id, accountname, username, password, phone, image, salt, register_time, last_login, description, isdelete) 
+        (id, accountname, username, password, phone, image, salt, register_time, last_login, description, isdelete, role) 
     VALUES 
         (null, '${accountName}', '', '${hashPwd}', '${mobile}', '', '${salt}', '${moment().format(
       'YYYY-MM-DD HH:mm:ss',
-    )}', '${moment().format('YYYY-MM-DD HH:mm:ss')}', '', 0);
+    )}', '${moment().format('YYYY-MM-DD HH:mm:ss')}', '', 0, '${role || 3}');
     `;
     try {
       await sequelize.query(registerSQL);

@@ -49,6 +49,7 @@ export class AuthService {
       id: user.id,
       phone: user.phone,
       sub: user.id,
+      role: user.role,
     };
     // console.log('JWT验证 - Step 3: 处理 jwt 签证');
     try {

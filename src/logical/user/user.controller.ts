@@ -6,6 +6,7 @@ import {
   Req,
   UseGuards,
   UsePipes,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/logical/auth/auth.service';
@@ -13,6 +14,9 @@ import { UserService } from 'src/logical/user/user.service';
 import { Request } from 'express';
 import { ValidationPipe } from 'src/pipe/validation.pipe';
 import { RegisterInfoDTO } from 'src/logical/user/user.dto'; // 引入 DTO
+import { RbacInterceptor } from 'src/interceptor/rbac.interceptor';
+import { RbacGuard } from 'src/guards/rbac.guard';
+import { roleConstans as role } from 'src/logical/auth/constants'; // 引入角色常量
 
 interface RequestWithUserInfo extends Request {
   user: any;
@@ -32,6 +36,8 @@ export class UserController {
   }
 
   @UsePipes(new ValidationPipe()) // 使用管道验证
+  // @UseInterceptors(new RbacInterceptor(role.SUPER_ADMIN))
+  @UseGuards(new RbacGuard(role.ADMIN))
   @Post('register')
   async register(
     @Req() request: RequestWithUserInfo,
