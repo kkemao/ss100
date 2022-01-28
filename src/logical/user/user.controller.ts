@@ -17,11 +17,14 @@ import { RegisterInfoDTO } from 'src/logical/user/user.dto'; // 引入 DTO
 import { RbacInterceptor } from 'src/interceptor/rbac.interceptor';
 import { RbacGuard } from 'src/guards/rbac.guard';
 import { roleConstans as role } from 'src/logical/auth/constants'; // 引入角色常量
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 interface RequestWithUserInfo extends Request {
   user: any;
 }
 
+@ApiBearerAuth() // Swagger 的 JWT 验证
+@ApiTags('user') // 添加 接口标签 装饰器
 @UseGuards(AuthGuard('jwt')) // 使用 'JWT' 进行验证
 @Controller('user')
 export class UserController {
