@@ -7,6 +7,12 @@ const productConfig = {
     database: 'demo', // 库名
     connectionLimit: 10, // 连接限制
   },
+  redis: {
+    port: '32079',
+    host: '192.168.13.88',
+    db: '0',
+    password: 'intellif',
+  },
 };
 
 const localConfig = {
@@ -17,6 +23,12 @@ const localConfig = {
     password: 'introcks1234',
     database: 'demo', // 库名
     connectionLimit: 10, // 连接限制
+  },
+  redis: {
+    port: '32079',
+    host: '192.168.13.88',
+    db: '0',
+    password: 'intellif',
   },
 };
 
