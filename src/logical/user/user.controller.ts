@@ -35,7 +35,7 @@ export class UserController {
 
   @Post('find-one')
   findOne(@Body() body: any) {
-    return this.userService.findOne(body.username);
+    return this.userService.findOne(body.accountName);
   }
 
   @UsePipes(new ValidationPipe()) // 使用管道验证

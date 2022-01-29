@@ -44,7 +44,7 @@ export class AuthService {
   // JWT验证 - Step 3: 处理 jwt 签证
   async certificate(user: any) {
     const payload = {
-      username: user.username,
+      userName: user.username,
       accountName: user.accountname,
       password: user.password,
       id: user.id,
@@ -58,7 +58,7 @@ export class AuthService {
       // 实例化 redis
       const redis = await RedisInstance.initRedis('auth.certificate', 0);
       // 将用户信息和 token 存入 redis，并设置失效时间，语法：[key, seconds, value]
-      await redis.setex(`${user.id}-${user.username}`, 30, `${token}`);
+      await redis.setex(`${user.id}-${user.accountname}`, 30, `${token}`);
       return {
         code: 200,
         data: {
