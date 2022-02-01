@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `t_manager` (
   `last_login` datetime NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `isdelete` int(11) NOT NULL DEFAULT '0',
+  `role` int(11) DEFAULT '3',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
@@ -115,8 +116,9 @@ CREATE TABLE IF NOT EXISTS `t_user` (
   `last_login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` varchar(255) DEFAULT NULL,
   `isdelete` int(11) NOT NULL DEFAULT '0',
+  `role` int(11) DEFAULT '3',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
 
