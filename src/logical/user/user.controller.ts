@@ -33,9 +33,16 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
 
+  @UseGuards(new RbacGuard(role.ADMIN))
   @Post('find-one')
   findOne(@Body() body: any) {
     return this.userService.findOne(body.accountName);
+  }
+
+  @UseGuards(new RbacGuard(role.ADMIN))
+  @Get('find-all')
+  async findAll() {
+    return await this.userService.findAll();
   }
 
   @UsePipes(new ValidationPipe()) // 使用管道验证

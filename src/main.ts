@@ -42,7 +42,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.use(express.json()); // For parsing application/json
   app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 

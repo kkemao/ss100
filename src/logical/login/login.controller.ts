@@ -23,12 +23,12 @@ export class LoginController {
         return this.authService.certificate(authResult.user);
       case 2:
         return {
-          code: 600,
+          statusCode: 600,
           msg: `账号或密码不正确`,
         };
       default:
         return {
-          code: 600,
+          statusCode: 600,
           msg: `查无此人`,
         };
     }

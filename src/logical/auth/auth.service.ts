@@ -58,17 +58,22 @@ export class AuthService {
       // 实例化 redis
       const redis = await RedisInstance.initRedis('auth.certificate', 0);
       // 将用户信息和 token 存入 redis，并设置失效时间，语法：[key, seconds, value]
-      await redis.setex(`${user.id}-${user.accountname}`, 30, `${token}`);
+      await redis.setex(`${user.id}-${user.accountname}`, 3600 * 8, `${token}`);
       return {
-        code: 200,
+        statusCode: 200,
         data: {
-          token,
+          token: token,
+          userInfo: {
+            username: user.username,
+            phone: user.phone,
+            id: user.id,
+          },
         },
         msg: `登录成功`,
       };
     } catch (error) {
       return {
-        code: 600,
+        statusCode: 600,
         msg: `账号或密码错误`,
       };
     }

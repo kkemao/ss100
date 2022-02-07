@@ -45,6 +45,7 @@ export class FileController {
     return {
       statusCode: 200,
       url: '/' + file.path,
+      msg: '上传成功',
     };
   }
 }

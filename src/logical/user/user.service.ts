@@ -22,6 +22,23 @@ export class UserService {
       return void 0;
     }
   }
+  async findAll(): Promise<any> {
+    const sql = `SELECT id, accountName, username, role, phone, image, register_time, last_login FROM t_user;`;
+    try {
+      const user = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT, // 查询方式
+        raw: true, // 是否使用数组组装的方式展示结果
+      });
+      return {
+        statusCode: 200,
+        data: user,
+        msg: '查询成功',
+      };
+    } catch (error) {
+      console.error(error);
+      return void 0;
+    }
+  }
   /**
    * 注册
    * @param requestBody 请求体
@@ -30,14 +47,14 @@ export class UserService {
     const { accountName, password, repassword, mobile, role } = requestBody;
     if (password !== repassword) {
       return {
-        code: 400,
+        statusCode: 400,
         msg: '两次密码输入不一致',
       };
     }
     const user = await this.findOne(accountName);
     if (user) {
       return {
-        code: 400,
+        statusCode: 400,
         msg: '用户已存在',
       };
     }
@@ -54,12 +71,12 @@ export class UserService {
     try {
       await sequelize.query(registerSQL);
       return {
-        code: 200,
+        statusCode: 200,
         msg: 'Success',
       };
     } catch (error) {
       return {
-        code: 503,
+        statusCode: 503,
         msg: `Service error: ${error}`,
       };
     }
