@@ -39,6 +39,19 @@ export class LabelService {
       };
     }
   }
+  async findSecondLevelLabel(): Promise<any> {
+    const sql = `select * from t_label where level = 2;`;
+    try {
+      let rows: any[] = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      return rows;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  }
   async addLabel(labelInfo: {
     name: string;
     level: number;

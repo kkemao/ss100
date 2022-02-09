@@ -1,8 +1,4 @@
 import { Module } from '@nestjs/common';
-import { LabelService } from './label.service';
 
-@Module({
-  providers: [LabelService],
-  exports: [LabelService],
-})
+@Module({})
 export class LabelModule {}

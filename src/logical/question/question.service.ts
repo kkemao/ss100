@@ -26,6 +26,52 @@ export class QuestionService {
       };
     }
   }
+  async findQuestion(params: {
+    searchText: string;
+    page: number;
+    pageSize: number;
+    label_id: number;
+    label_children_id: number;
+  }): Promise<any> {
+    const { searchText, page, pageSize, label_id, label_children_id } = params;
+    const st = `title like '%${searchText}%'`;
+    const pid = label_id ? `and parent_id = ${label_id}` : '';
+    const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
+    const sql = `select 
+      t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id
+       from t_question t 
+       left join t_label l 
+       on t.label_id = l.id 
+       where ${st} ${pid} ${lid} 
+       limit ${(page - 1) * pageSize},${pageSize};`;
+    const sqlTotal = `select count(1) as total from t_question t 
+       left join t_label l 
+       on t.label_id = l.id 
+       where ${st} ${pid} ${lid};`;
+    try {
+      let total: any[] = await sequelize.query(sqlTotal, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      let questionList: any[] = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      return {
+        statusCode: 200,
+        data: Object.values(questionList),
+        total: total[0].total,
+        msg: '查询成功',
+      };
+    } catch (error) {
+      console.error(error.message);
+      return {
+        statusCode: 500,
+        msg: error.message,
+        data: null,
+      };
+    }
+  }
 
   async deleteQuestion(id: number): Promise<any> {
     const sql = `delete from t_question where id = ${id}`;

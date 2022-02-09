@@ -18,6 +18,12 @@ export class QuestionController {
   }
 
   @UseGuards(new RbacGuard(role.HUMAN))
+  @Post('all')
+  async findQuestion(@Body() body: any) {
+    return await this.questionService.findQuestion(body);
+  }
+
+  @UseGuards(new RbacGuard(role.HUMAN))
   @Post('add')
   async addQuestion(@Body() body: any) {
     return await this.questionService.addQuestion(body);
