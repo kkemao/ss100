@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `demo` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `demo`;
 -- MySQL dump 10.13  Distrib 8.0.27, for macos11 (x86_64)
 --
 -- Host: localhost    Database: demo
@@ -31,6 +33,7 @@ CREATE TABLE `t_article` (
   `label_id` int(11) NOT NULL COMMENT '关联标签id',
   `status` int(11) NOT NULL,
   `description` varchar(2048) DEFAULT NULL COMMENT '备注',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -70,39 +73,6 @@ LOCK TABLES `t_label` WRITE;
 /*!40000 ALTER TABLE `t_label` DISABLE KEYS */;
 INSERT INTO `t_label` VALUES (4,'行业政策',1,0,'碳中和，节能减排术语，是指企业、团体或个人测算在一定时间内，直接或间接产生的温室气体排放总量，通过植树造林、节能减排等形式，抵消自身产生的二氧化碳排放，实现二氧化碳的“零排放”。','sssssssssss'),(7,'碳中和',2,4,'碳中和，节能减排术语，是指企业、团体或个人测算在一定时间内，直接或间接产生的温室气体排放总量，通过植树造林、节能减排等形式，抵消自身产生的二氧化碳排放，实现二氧化碳的“零排放”。','sssssssssss'),(19,'数字思维',1,0,'1',''),(20,'数字驱动思维',2,19,'数字驱动思维',''),(21,'资源盘点',1,0,'资源盘点',''),(22,'数字技术',1,0,'数字技术',''),(23,'管理实践',1,0,'管理实践',''),(24,'产品设计',2,21,'产品设计',''),(25,'数字孪生',2,22,'数字孪生',''),(26,'数字经济',2,4,'数字经济 ',''),(27,'新基建',2,4,'新基建',''),(28,'产品生命周期价值链',2,21,'产品生命周期价值链','');
 /*!40000 ALTER TABLE `t_label` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_manager`
---
-
-DROP TABLE IF EXISTS `t_manager`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_manager` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `accountname` varchar(50) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone` varchar(50) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `salt` varchar(255) DEFAULT NULL,
-  `register_time` datetime NOT NULL,
-  `last_login` datetime NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `isdelete` int(11) NOT NULL DEFAULT '0',
-  `role` int(11) DEFAULT '3',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_manager`
---
-
-LOCK TABLES `t_manager` WRITE;
-/*!40000 ALTER TABLE `t_manager` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_manager` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -219,8 +189,41 @@ CREATE TABLE `t_user` (
 
 LOCK TABLES `t_user` WRITE;
 /*!40000 ALTER TABLE `t_user` DISABLE KEYS */;
-INSERT INTO `t_user` VALUES (12,'zengkefan','zengkefan','wtY2KwmMgPO+8a3mtptqBw==','18664397582','','sLkv','2022-02-01 02:52:09','2022-02-01 02:52:09','',0,1);
+INSERT INTO `t_user` VALUES (12,'zengkefan','zengkefan','wtY2KwmMgPO+8a3mtptqBw==','18664397582','','sLkv','2022-01-31 18:52:09','2022-01-31 18:52:09','',0,1);
 /*!40000 ALTER TABLE `t_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `t_wechat_user`
+--
+
+DROP TABLE IF EXISTS `t_wechat_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `t_wechat_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `accountname` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `salt` varchar(255) DEFAULT NULL,
+  `register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(255) DEFAULT NULL,
+  `isdelete` int(11) NOT NULL DEFAULT '0',
+  `role` int(11) DEFAULT '3',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `t_wechat_user`
+--
+
+LOCK TABLES `t_wechat_user` WRITE;
+/*!40000 ALTER TABLE `t_wechat_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t_wechat_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -232,4 +235,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-10 12:27:55
+-- Dump completed on 2022-02-10 13:59:40
