@@ -16,6 +16,8 @@ import { diskStorage } from 'multer';
 import * as ExcelJs from 'exceljs';
 import { FileService } from './file.service';
 import { LabelService } from '../label/label.service';
+import { RbacGuard } from 'src/guards/rbac.guard';
+import { roleConstans as role } from 'src/logical/auth/constants'; // 引入角色常量
 
 @ApiBearerAuth()
 @ApiTags('file')
@@ -27,6 +29,8 @@ export class FileController {
     private fileService: FileService,
     private labelService: LabelService,
   ) {}
+
+  @UseGuards(new RbacGuard(role.HUMAN))
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -58,6 +62,7 @@ export class FileController {
     };
   }
 
+  @UseGuards(new RbacGuard(role.HUMAN))
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
   async importFile(

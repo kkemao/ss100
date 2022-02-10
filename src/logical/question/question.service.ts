@@ -32,9 +32,12 @@ export class QuestionService {
     pageSize: number;
     label_id: number;
     label_children_id: number;
+    type: number;
   }): Promise<any> {
-    const { searchText, page, pageSize, label_id, label_children_id } = params;
+    const { searchText, page, pageSize, label_id, label_children_id, type } =
+      params;
     const st = `title like '%${searchText}%'`;
+    const _type = type ? `and type = ${type}` : '';
     const pid = label_id ? `and parent_id = ${label_id}` : '';
     const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
     const sql = `select 
@@ -42,12 +45,12 @@ export class QuestionService {
        from t_question t 
        left join t_label l 
        on t.label_id = l.id 
-       where ${st} ${pid} ${lid} 
+       where ${st} ${pid} ${lid} ${_type} 
        limit ${(page - 1) * pageSize},${pageSize};`;
     const sqlTotal = `select count(1) as total from t_question t 
        left join t_label l 
        on t.label_id = l.id 
-       where ${st} ${pid} ${lid};`;
+       where ${st} ${pid} ${lid} ${_type};`;
     try {
       let total: any[] = await sequelize.query(sqlTotal, {
         type: Sequelize.QueryTypes.SELECT,

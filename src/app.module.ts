@@ -11,9 +11,10 @@ import { LabelController } from './logical/label/label.controller';
 import { LabelModule } from './logical/label/label.module';
 import { QuestionController } from './logical/question/question.controller';
 import { QuestionModule } from './logical/question/question.module';
+import { DashboardModule } from './logical/dashboard/dashboard.module';
 
 @Module({
-  imports: [UserModule, AuthModule, FileModule, LabelModule, QuestionModule],
+  imports: [UserModule, AuthModule, FileModule, LabelModule, QuestionModule, DashboardModule],
   controllers: [
     AppController,
     UserController,
