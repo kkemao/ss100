@@ -11,10 +11,20 @@ import { LabelController } from './logical/label/label.controller';
 import { LabelModule } from './logical/label/label.module';
 import { QuestionController } from './logical/question/question.controller';
 import { QuestionModule } from './logical/question/question.module';
+import { ArticleController } from './logical/article/article.controller';
+import { ArticleModule } from './logical/article/article.module';
 import { DashboardModule } from './logical/dashboard/dashboard.module';
 
 @Module({
-  imports: [UserModule, AuthModule, FileModule, LabelModule, QuestionModule, DashboardModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    FileModule,
+    LabelModule,
+    QuestionModule,
+    ArticleModule,
+    DashboardModule,
+  ],
   controllers: [
     AppController,
     UserController,
@@ -22,6 +32,7 @@ import { DashboardModule } from './logical/dashboard/dashboard.module';
     FileController,
     LabelController,
     QuestionController,
+    ArticleController,
   ],
   providers: [AppService],
 })

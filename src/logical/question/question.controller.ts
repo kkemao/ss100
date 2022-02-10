@@ -32,7 +32,7 @@ export class QuestionController {
   @UseGuards(new RbacGuard(role.HUMAN))
   @Post('update')
   async updateQuestion(@Body() body: any) {
-    return await this.questionService.updateLabel(body);
+    return await this.questionService.updateQuestion(body);
   }
 
   @UseGuards(new RbacGuard(role.HUMAN))
