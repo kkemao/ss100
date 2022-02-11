@@ -6,7 +6,7 @@ import * as moment from 'moment';
 @Injectable()
 export class ArticleService {
   async findAllArticle(): Promise<any> {
-    const sql = `select t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id from t_article t left join t_label l on t.label_id = l.id;`;
+    const sql = `select t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id from t_article t left join t_label l on t.label_id = l.id order by create_time desc;`;
     try {
       let articleList: any[] = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
@@ -42,7 +42,7 @@ export class ArticleService {
        from t_article t 
        left join t_label l 
        on t.label_id = l.id 
-       where ${st} ${pid} ${lid}  
+       where ${st} ${pid} ${lid}  order by create_time desc  
        limit ${(page - 1) * pageSize},${pageSize};`;
     const sqlTotal = `select count(1) as total from t_article t 
        left join t_label l 
@@ -152,7 +152,7 @@ export class ArticleService {
             status = ${status}, 
             description = '${description}', 
             create_time = '${moment().format('YYYY-MM-DD HH:mm:ss')}' ,
-            auth = '${auth}',
+            auth = '${auth}'
         where id = ${id}`;
     try {
       const result = await sequelize.query(sql, {
@@ -165,7 +165,7 @@ export class ArticleService {
         msg: '更新成功',
       };
     } catch (error) {
-      console.error(error.message);
+      console.error('zkf-error', content, sql, error.message);
       return {
         statusCode: 500,
         msg: error.message,

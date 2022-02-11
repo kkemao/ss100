@@ -98,12 +98,11 @@ export class FileService {
     INSERT INTO t_article 
     (title, cover, sketch, content, label_id, status, description, create_time, auth) 
     VALUES 
-    ('${title}', '${cover}', '${sketch}', '${content}', ${
-      labelList[label_id]
-    }, ${EQStatus[status]}, 
+    ('${title}', '${
+      typeof cover === 'string' ? cover : cover.text
+    }', '${sketch}', '${content}', ${labelList[label_id]}, ${EQStatus[status]}, 
     '${description}', '${moment().format('YYYY-MM-DD HH:mm:ss')}', '${auth}');
     `;
-    // console.log('zkf', this.labelList, label_id);
     try {
       const result = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.INSERT,

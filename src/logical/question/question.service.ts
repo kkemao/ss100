@@ -6,7 +6,7 @@ import * as moment from 'moment';
 @Injectable()
 export class QuestionService {
   async findAllQuestion(): Promise<any> {
-    const sql = `select t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id from t_question t left join t_label l on t.label_id = l.id;`;
+    const sql = `select t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id from t_question t left join t_label l on t.label_id = l.id order by t.time desc;`;
     try {
       let questionList: any[] = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
@@ -45,7 +45,7 @@ export class QuestionService {
        from t_question t 
        left join t_label l 
        on t.label_id = l.id 
-       where ${st} ${pid} ${lid} ${_type} 
+       where ${st} ${pid} ${lid} ${_type} order by t.time desc 
        limit ${(page - 1) * pageSize},${pageSize};`;
     const sqlTotal = `select count(1) as total from t_question t 
        left join t_label l 
