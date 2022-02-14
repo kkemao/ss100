@@ -51,6 +51,7 @@ export class AuthService {
       phone: user.phone,
       sub: user.id,
       role: user.role,
+      image: user.image,
     };
     // console.log('JWT验证 - Step 3: 处理 jwt 签证');
     try {
@@ -67,6 +68,7 @@ export class AuthService {
             username: user.username,
             phone: user.phone,
             id: user.id,
+            image: user.image,
           },
         },
         msg: `登录成功`,

@@ -96,7 +96,27 @@ export class FileController {
       if (rowNumber > 1) {
         const _obj = {};
         row.eachCell((cell, colNumber) => {
-          _obj[obj[titleArr[colNumber - 1]]] = cell.value;
+          const key = obj[titleArr[colNumber - 1]];
+          _obj[key] = cell.value;
+          if (key === 'content') {
+            _obj[key] =
+              typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
+            const content = [];
+            const arr = _obj[key].split('||');
+            arr.map((item: string) => {
+              content.push({
+                type:
+                  item.startsWith('http') ||
+                  item.endsWith('.png') ||
+                  item.endsWith('.jpeg') ||
+                  item.endsWith('.jpg')
+                    ? 1
+                    : 2,
+                content: item,
+              });
+            });
+            _obj[key] = JSON.stringify(content);
+          }
         });
         result.push(_obj);
       }

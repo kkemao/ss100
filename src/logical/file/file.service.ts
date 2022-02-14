@@ -39,9 +39,11 @@ export class FileService {
   INSERT INTO t_question 
   (title, cover, options, answer, origin, label_id, status, description, type, imageUrl, time) 
   VALUES 
-  ('${title}', '${cover}', '${options}', '${answer}', '${origin}', ${
-      labelList[label_id]
-    }, ${EQStatus[status]}, 
+  ('${title}', '${
+      typeof cover === 'string' ? cover : cover.text
+    }', '${options}', '${answer}', '${origin}', ${labelList[label_id]}, ${
+      EQStatus[status]
+    }, 
   '${description}', ${EQuestionType[type]}, '${imageUrl}', '${moment().format(
       'YYYY-MM-DD HH:mm:ss',
     )}');
