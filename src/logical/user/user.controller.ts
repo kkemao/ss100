@@ -7,6 +7,7 @@ import {
   UseGuards,
   UsePipes,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/logical/auth/auth.service';
@@ -56,5 +57,23 @@ export class UserController {
     //   拿到jwt里面保存的用户信息
     // console.log('zkf-request-user', request.user);
     return await this.userService.register(body);
+  }
+
+  @UseGuards(new RbacGuard(role.HUMAN))
+  @Post('add')
+  async addUser(@Body() body: any) {
+    return await this.userService.register(body);
+  }
+
+  @UseGuards(new RbacGuard(role.HUMAN))
+  @Post('update')
+  async updateUser(@Body() body: any) {
+    return await this.userService.updateUser(body);
+  }
+
+  @UseGuards(new RbacGuard(role.ADMIN))
+  @Get('delete')
+  async deteleUser(@Query() query: any) {
+    return await this.userService.deleteUser(query.id);
   }
 }

@@ -35,7 +35,7 @@ export class ArticleController {
     return await this.articleService.updateArticle(body);
   }
 
-  @UseGuards(new RbacGuard(role.HUMAN))
+  @UseGuards(new RbacGuard(role.ADMIN))
   @Get('delete')
   async deteleArticle(@Query() query: any) {
     return await this.articleService.deleteArticle(query.id);

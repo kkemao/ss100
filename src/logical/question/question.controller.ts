@@ -35,7 +35,7 @@ export class QuestionController {
     return await this.questionService.updateQuestion(body);
   }
 
-  @UseGuards(new RbacGuard(role.HUMAN))
+  @UseGuards(new RbacGuard(role.ADMIN))
   @Get('delete')
   async deteleQuestion(@Query() query: any) {
     return await this.questionService.deleteQuestion(query.id);

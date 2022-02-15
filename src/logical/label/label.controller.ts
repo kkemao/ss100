@@ -38,7 +38,7 @@ export class LabelController {
     return await this.labelService.updateLabel(body);
   }
 
-  @UseGuards(new RbacGuard(role.HUMAN))
+  @UseGuards(new RbacGuard(role.ADMIN))
   @Get('delete')
   async deteleLabel(@Query() query: any) {
     return await this.labelService.deleteLabel(query.id);
