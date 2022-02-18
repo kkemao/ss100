@@ -14,6 +14,7 @@ import { QuestionModule } from './logical/question/question.module';
 import { ArticleController } from './logical/article/article.controller';
 import { ArticleModule } from './logical/article/article.module';
 import { DashboardModule } from './logical/dashboard/dashboard.module';
+import { WechatModule } from './wechat/wechat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DashboardModule } from './logical/dashboard/dashboard.module';
     QuestionModule,
     ArticleModule,
     DashboardModule,
+    WechatModule,
   ],
   controllers: [
     AppController,

@@ -27,18 +27,21 @@ export class ArticleService {
     }
   }
   async findArticle(params: {
+    id: number;
     searchText: string;
     page: number;
     pageSize: number;
     label_id: number;
     label_children_id: number;
   }): Promise<any> {
-    const { searchText, page, pageSize, label_id, label_children_id } = params;
-    const st = `title like '%${searchText}%'`;
+    const { id, searchText, page, pageSize, label_id, label_children_id } =
+      params;
+    const st = `title like '%${searchText || ''}%'`;
     const pid = label_id ? `and parent_id = ${label_id}` : '';
     const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
+    const aid = id ? `and id = ${id}` : '';
     const sql = `select 
-    t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id
+    t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id, l.name as labelname
        from t_article t 
        left join t_label l 
        on t.label_id = l.id 
@@ -47,7 +50,7 @@ export class ArticleService {
     const sqlTotal = `select count(1) as total from t_article t 
        left join t_label l 
        on t.label_id = l.id 
-       where ${st} ${pid} ${lid} ;`;
+       where ${st} ${pid} ${lid} ${aid} ;`;
     try {
       let total: any[] = await sequelize.query(sqlTotal, {
         type: Sequelize.QueryTypes.SELECT,
@@ -159,7 +162,6 @@ export class ArticleService {
         type: Sequelize.QueryTypes.UPDATE,
         raw: true,
       });
-      console.log('zkf', result);
       return {
         statusCode: 200,
         msg: '更新成功',
