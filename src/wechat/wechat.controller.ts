@@ -1,9 +1,18 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ArticleService } from '../logical/article/article.service';
+import { LabelService } from '../logical/label/label.service';
 
 @Controller('wechat')
 export class WechatController {
-  constructor(private articleService: ArticleService) {}
+  constructor(
+    private articleService: ArticleService,
+    private labelService: LabelService,
+  ) {}
+
+  @Get('label/all')
+  async queryLabel() {
+    return await this.labelService.queryLabel();
+  }
 
   @Get('article/all')
   async findAllArticle() {

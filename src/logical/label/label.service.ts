@@ -39,6 +39,27 @@ export class LabelService {
       };
     }
   }
+  async queryLabel(): Promise<any> {
+    const sql = `select * from t_label;`;
+    try {
+      let rows: any[] = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      return {
+        statusCode: 200,
+        data: rows,
+        msg: '查询成功',
+      };
+    } catch (error) {
+      console.error(error.message);
+      return {
+        statusCode: 500,
+        msg: error.message,
+        data: null,
+      };
+    }
+  }
   async findSecondLevelLabel(): Promise<any> {
     const sql = `select * from t_label where level = 2;`;
     try {
