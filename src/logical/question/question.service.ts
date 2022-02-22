@@ -76,6 +76,32 @@ export class QuestionService {
     }
   }
 
+  async findQuestionTest(): Promise<any> {
+    const sql = `select 
+      t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id
+       from t_question t 
+       left join t_label l 
+       on t.label_id = l.id limit 0,20;`;
+    try {
+      let questionList: any[] = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      return {
+        statusCode: 200,
+        data: Object.values(questionList),
+        msg: '查询成功',
+      };
+    } catch (error) {
+      console.error(error.message);
+      return {
+        statusCode: 500,
+        msg: error.message,
+        data: null,
+      };
+    }
+  }
+
   async deleteQuestion(id: number): Promise<any> {
     const sql = `delete from t_question where id = ${id}`;
     try {
