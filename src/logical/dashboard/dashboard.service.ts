@@ -7,7 +7,7 @@ export class DashboardService {
   async getAllCount(): Promise<any> {
     const data: any = {};
     try {
-      const userCountSql = `select count(1) as total from t_user;`;
+      const userCountSql = `select count(1) as total from t_wechat_user;`;
       let userCounts: any[] = await sequelize.query(userCountSql, {
         type: Sequelize.QueryTypes.SELECT,
         raw: true,

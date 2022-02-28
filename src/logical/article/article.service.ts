@@ -6,7 +6,7 @@ import * as moment from 'moment';
 @Injectable()
 export class ArticleService {
   async findAllArticle(): Promise<any> {
-    const sql = `select t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id from t_article t left join t_label l on t.label_id = l.id order by create_time desc;`;
+    const sql = `select t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, t.count, l.parent_id from t_article t left join t_label l on t.label_id = l.id order by create_time desc;`;
     try {
       let articleList: any[] = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
@@ -41,7 +41,7 @@ export class ArticleService {
     const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
     const aid = id ? `and id = ${id}` : '';
     const sql = `select 
-    t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, l.parent_id, l.name as labelname
+    t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, t.count, l.parent_id, l.name as labelname
        from t_article t 
        left join t_label l 
        on t.label_id = l.id 
@@ -111,10 +111,12 @@ export class ArticleService {
     } = articleInfo;
     const sql = `
     INSERT INTO t_article 
-    (title, cover, sketch, content, label_id, status, description, create_time, auth) 
+    (title, cover, sketch, content, label_id, status, description, create_time, auth, count) 
     VALUES 
     ('${title}', '${cover}', '${sketch}', '${content}', ${label_id}, ${status}, 
-    '${description}', '${moment().format('YYYY-MM-DD HH:mm:ss')}', '${auth}');
+    '${description}', '${moment().format(
+      'YYYY-MM-DD HH:mm:ss',
+    )}', '${auth}', 0);
     `;
     try {
       const result = await sequelize.query(sql, {

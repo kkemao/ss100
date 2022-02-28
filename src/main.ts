@@ -15,6 +15,8 @@ import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { AllExceptionsFilter } from './filter/any-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as Https from 'https';
+import { Writable } from 'stream';
 
 const allowRoute = ['/api/user/login'];
 

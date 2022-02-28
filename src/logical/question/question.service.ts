@@ -81,7 +81,7 @@ export class QuestionService {
       t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id
        from t_question t 
        left join t_label l 
-       on t.label_id = l.id limit 0,20;`;
+       on t.label_id = l.id where t.status = 1 order by t.time desc limit 0,20;`;
     try {
       let questionList: any[] = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
