@@ -40,8 +40,7 @@ export class QuestionService {
     const _type = type ? `and type = ${type}` : '';
     const pid = label_id ? `and parent_id = ${label_id}` : '';
     const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
-    const sql = `select 
-      t.id, t.title, t.cover, t.options, t.answer, t.origin, t.label_id, t.status, t.description, t.type, t.imageUrl, t.time, l.parent_id
+    const sql = `select t.*, l.parent_id
        from t_question t 
        left join t_label l 
        on t.label_id = l.id 
@@ -141,8 +140,10 @@ export class QuestionService {
     INSERT INTO t_question 
     (title, cover, options, answer, origin, label_id, status, description, type, imageUrl, time) 
     VALUES 
-    ('${title}', '${cover}', '${options}', '${answer}', '${origin}', ${label_id}, ${status}, 
-    '${description}', ${type}, '${imageUrl}', '${moment().format(
+    ('${title}', '${cover}', '${options}', '${answer}', '${
+      origin || ''
+    }', ${label_id}, ${status}, 
+    '${description || ''}', ${type}, '${imageUrl}', '${moment().format(
       'YYYY-MM-DD HH:mm:ss',
     )}');
     `;

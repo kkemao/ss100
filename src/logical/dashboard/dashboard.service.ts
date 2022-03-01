@@ -21,12 +21,13 @@ export class DashboardService {
       });
       data['question'] = questionCounts[0].total;
 
-      const articleCountSql = `select count(1) as total from t_article;`;
+      const articleCountSql = `select count(1) as total, sum(count) as count from t_article;`;
       let articleCounts: any[] = await sequelize.query(articleCountSql, {
         type: Sequelize.QueryTypes.SELECT,
         raw: true,
       });
       data['article'] = articleCounts[0].total;
+      data['articleCount'] = articleCounts[0].count;
 
       const labelCountSql = `select count(1) as total from t_label;`;
       let labelCounts: any[] = await sequelize.query(labelCountSql, {

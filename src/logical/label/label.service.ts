@@ -137,13 +137,33 @@ export class LabelService {
     }
   }
   async deleteLabel(id: number): Promise<any> {
+    const checkSql = `(select q.title from t_question as q where q.label_id = ${id} limit 1) union all (select a.title as atitle from t_article as a where a.label_id = ${id} limit 1)`;
+    try {
+      const resultc = await sequelize.query(checkSql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      if (resultc.length) {
+        return {
+          statusCode: 1001,
+          msg: '该类标签下有文章或者试题，请先转移。',
+          data: null,
+        };
+      }
+    } catch (error) {
+      console.error(error.message);
+      return {
+        statusCode: 500,
+        msg: error.message,
+        data: null,
+      };
+    }
     const sql = `delete from t_label where id = ${id}`;
     try {
       const result = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.DELETE,
         raw: true,
       });
-      console.log('zkf', result);
       return {
         statusCode: 200,
         msg: '删除成功',
