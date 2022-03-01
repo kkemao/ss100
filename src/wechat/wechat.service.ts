@@ -124,8 +124,8 @@ export class WechatService {
     }
   }
   getwxAuth(code: string): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      try {
+    try {
+      return new Promise<any>((resolve, reject) => {
         const url = `https://api.weixin.qq.com/sns/jscode2session?appid=wx3e9616624672b017&secret=2ea616a7451d1f665dd678aa15c71df8&js_code=${code}&grant_type=authorization_code`;
         const req = Https.request(url, (res) => {
           let str = '';
@@ -140,11 +140,12 @@ export class WechatService {
           });
         });
         req.end();
-      } catch (error) {
-        resolve(error.message);
-      }
-    });
+      });
+    } catch (error) {
+      return error.message;
+    }
   }
+
   async getSession(code: string): Promise<any> {
     const data = await this.getwxAuth(code);
     const { session_key, openid, errcode, errmsg } = JSON.parse(data);
@@ -254,6 +255,55 @@ export class WechatService {
       return {
         statusCode: 503,
         msg: `Service error: ${err}`,
+      };
+    }
+  }
+  async queryArticle(params: {
+    id: number;
+    searchText: string;
+    page: number;
+    pageSize: number;
+    label_id: number;
+    label_children_id: number;
+  }): Promise<any> {
+    const { id, searchText, page, pageSize, label_id, label_children_id } =
+      params;
+    const st = `title like '%${searchText || ''}%'`;
+    const pid = label_id ? `and parent_id = ${label_id}` : '';
+    const lid = label_children_id ? `and label_id = ${label_children_id}` : '';
+    const aid = id ? `and id = ${id}` : '';
+    const sql = `select 
+    t.id, t.title, t.cover, t.sketch, t.content, t.label_id, t.status, t.description, t.create_time, t.auth, t.count, l.parent_id, l.name as labelname
+       from t_article t 
+       left join t_label l 
+       on t.label_id = l.id 
+       where ${st} ${pid} ${lid} and t.status = 1  order by create_time desc  
+       limit ${(page - 1) * pageSize},${pageSize};`;
+    const sqlTotal = `select count(1) as total from t_article t 
+       left join t_label l 
+       on t.label_id = l.id 
+       where ${st} ${pid} ${lid} ${aid} and t.status = 1;`;
+    try {
+      let total: any[] = await sequelize.query(sqlTotal, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      let articleList: any[] = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+        raw: true,
+      });
+      return {
+        statusCode: 200,
+        data: Object.values(articleList),
+        total: total[0].total,
+        msg: '查询成功',
+      };
+    } catch (error) {
+      console.error(error.message);
+      return {
+        statusCode: 500,
+        msg: error.message,
+        data: null,
       };
     }
   }

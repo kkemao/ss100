@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ArticleService } from '../logical/article/article.service';
 import { LabelService } from '../logical/label/label.service';
 import { QuestionService } from 'src/logical/question/question.service';
 import { WechatService } from './wechat.service';
@@ -8,7 +7,6 @@ import { WechatService } from './wechat.service';
 export class WechatController {
   constructor(
     private wechatService: WechatService,
-    private articleService: ArticleService,
     private labelService: LabelService,
     private questionService: QuestionService,
   ) {}
@@ -18,14 +16,9 @@ export class WechatController {
     return await this.labelService.queryLabel();
   }
 
-  @Get('article/all')
-  async findAllArticle() {
-    return await this.articleService.findAllArticle();
-  }
-
   @Post('article/all')
   async findArticle(@Body() body: any) {
-    return await this.articleService.findArticle(body);
+    return await this.wechatService.queryArticle(body);
   }
 
   @Get('question/test')
@@ -67,6 +60,6 @@ export class WechatController {
   @Post('getarticle/labelparentid')
   async getArticleBylabelId(@Body() body: any) {
     // labelId为小类id
-    return await this.articleService.findArticle(body);
+    return await this.wechatService.queryArticle(body);
   }
 }
