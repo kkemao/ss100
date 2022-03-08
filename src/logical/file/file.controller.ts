@@ -18,6 +18,18 @@ import { FileService } from './file.service';
 import { LabelService } from '../label/label.service';
 import { RbacGuard } from 'src/guards/rbac.guard';
 import { roleConstans as role } from 'src/logical/auth/constants'; // 引入角色常量
+import * as admZip from 'adm-zip';
+import * as iconv from 'iconv-lite';
+
+const urlCheck = (url: any): string => {
+  if (!url) return '';
+  url = typeof url === 'string' ? url : url.text;
+  // 如果是完整的链接直接存入，否则增加存储前缀
+  url = url.startsWith('http') ? url : `/fileUpload/image/${url}`;
+  return url;
+};
+const isImage = (value: any): boolean =>
+  value.endsWith('.png') || value.endsWith('.jpeg') || value.endsWith('.jpg');
 
 @ApiBearerAuth()
 @ApiTags('file')
@@ -63,6 +75,45 @@ export class FileController {
   }
 
   @UseGuards(new RbacGuard(role.HUMAN))
+  @Post('images')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const path = `./fileUpload/image`;
+          if (!fs.existsSync(path)) {
+            fs.mkdirSync(path);
+          }
+          cb(null, path);
+        },
+        filename: (req: any, file, cb) => {
+          const typeArr = file.originalname.split('.');
+          cb(
+            null,
+            `${req.user?.accountName}__${
+              req.user?.id
+            }__${new Date().getTime()}.${typeArr[typeArr.length - 1]}`,
+          );
+        },
+      }),
+    }),
+  )
+  uploadBatchImage(@UploadedFile() file: Express.Multer.File) {
+    const zip = new admZip(file.path);
+    const zipEntries = zip.getEntries();
+    for (let i = 0; i < zipEntries.length; i++) {
+      let entry = zipEntries[i];
+      entry.entryName = iconv.decode(entry.rawEntryName, 'utf-8');
+    }
+    zip.extractAllTo(`./fileUpload/image`);
+    return {
+      statusCode: 200,
+      url: '/' + file.path,
+      msg: '图片上传成功',
+    };
+  }
+
+  @UseGuards(new RbacGuard(role.HUMAN))
   @Post('importArticle')
   @UseInterceptors(FileInterceptor('file'))
   async importArticle(
@@ -98,21 +149,18 @@ export class FileController {
         row.eachCell((cell, colNumber) => {
           const key = obj[titleArr[colNumber - 1]];
           _obj[key] = cell.value;
+          _obj[key] =
+            typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
+          if (key === 'cover') {
+            _obj[key] = isImage(_obj[key]) && urlCheck(_obj[key]);
+          }
           if (key === 'content') {
-            _obj[key] =
-              typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
             const content = [];
             const arr = _obj[key].split('||');
             arr.map((item: string) => {
               content.push({
-                type:
-                  item.startsWith('http') ||
-                  item.endsWith('.png') ||
-                  item.endsWith('.jpeg') ||
-                  item.endsWith('.jpg')
-                    ? 1
-                    : 2,
-                content: item,
+                type: isImage(item) ? 1 : 2,
+                content: isImage(item) ? urlCheck(item) : item,
               });
             });
             _obj[key] = JSON.stringify(content);
@@ -137,6 +185,7 @@ export class FileController {
     return res;
   }
 
+  // 上传试题
   @UseGuards(new RbacGuard(role.HUMAN))
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
@@ -152,6 +201,7 @@ export class FileController {
       编号: 'id',
       题型: 'type',
       题目: 'title',
+      封面: 'cover',
       选项: 'options',
       答案: 'answer',
       来源: 'origin',
@@ -171,7 +221,20 @@ export class FileController {
       if (rowNumber > 1) {
         const _obj = {};
         row.eachCell((cell, colNumber) => {
-          _obj[obj[titleArr[colNumber - 1]]] = cell.value;
+          const key = obj[titleArr[colNumber - 1]];
+          _obj[key] = cell.value;
+          _obj[key] =
+            typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
+          if (key === 'cover') {
+            console.log(
+              'zkf-objkey',
+              _obj[key],
+              isImage(_obj[key]),
+              urlCheck(_obj[key]),
+            );
+            _obj[key] = isImage(_obj[key]) && urlCheck(_obj[key]);
+          }
+          _obj[obj[titleArr[colNumber - 1]]] = _obj[key];
         });
         result.push(_obj);
       }
