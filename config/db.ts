@@ -1,15 +1,15 @@
 const productConfig = {
   mysql: {
     port: 3306,
-    host: '192.168.13.88',
+    host: '127.0.0.1',
     user: 'root',
     password: 'introcks1234',
-    database: 'demo', // 库名
+    database: 'ss100', // 库名
     connectionLimit: 10, // 连接限制
   },
   redis: {
-    port: '32079',
-    host: '192.168.13.88',
+    port: '6379',
+    host: '127.0.0.1',
     db: '0',
     password: 'intellif',
   },
@@ -26,15 +26,15 @@ const localConfig = {
   // },
   mysql: {
     port: 3306,
-    host: 'localhost',
+    host: '139.159.224.136',
     user: 'root',
-    password: 'introcks1234',
-    database: 'demo', // 库名
+    password: 'introcks@1234',
+    database: 'ss100', // 库名
     connectionLimit: 10, // 连接限制
   },
   redis: {
     port: '6379',
-    host: '127.0.0.1',
+    host: '139.159.224.136',
     db: '0',
     password: 'intellif',
   },
