@@ -150,7 +150,7 @@ export class FileController {
           const key = obj[titleArr[colNumber - 1]];
           _obj[key] = cell.value;
           _obj[key] =
-            typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
+            typeof _obj[key] === 'object' ? _obj[key].text : _obj[key];
           if (key === 'cover') {
             _obj[key] = isImage(_obj[key]) && urlCheck(_obj[key]);
           }
@@ -181,8 +181,41 @@ export class FileController {
       labelObj[item.name] = item.id;
     });
     this.labelList = labelObj;
-    const res = await this.fileService.addArticle(this.labelList, result, []);
-    return res;
+    let rightList = [],
+      errMsg = '';
+    result.map((item, index) => {
+      const { id, title, sketch, content, label_id } = item;
+      if (!title || !this.labelList[label_id] || !content || !sketch) {
+        if (!title) {
+          errMsg += `序号${id} 标题不能为空；`;
+        }
+        if (!sketch) {
+          errMsg += `序号${id} 简述不能为空；`;
+        }
+        if (!content) {
+          errMsg += `序号${id} 内容不能为空；`;
+        }
+        if (!this.labelList[label_id]) {
+          errMsg += `序号${id} 标签无法在平台找到；`;
+        }
+      } else {
+        rightList.push(item);
+      }
+    });
+    if (!rightList.length) {
+      return {
+        statusCode: 200,
+        msg: `导入成功${rightList.length}条，失败信息：【${errMsg}】`,
+      };
+    }
+    const res = await this.fileService.addArticle(this.labelList, rightList);
+    return {
+      ...res,
+      msg:
+        res.statusCode === 500
+          ? res.msg
+          : `导入成功${rightList.length}条，失败信息：【${errMsg}】`,
+    };
   }
 
   // 上传试题
@@ -224,17 +257,11 @@ export class FileController {
           const key = obj[titleArr[colNumber - 1]];
           _obj[key] = cell.value;
           _obj[key] =
-            typeof _obj[key] === 'string' ? _obj[key] : _obj[key].text;
+            typeof _obj[key] === 'object' ? _obj[key].text : _obj[key];
           if (key === 'cover') {
-            console.log(
-              'zkf-objkey',
-              _obj[key],
-              isImage(_obj[key]),
-              urlCheck(_obj[key]),
-            );
             _obj[key] = isImage(_obj[key]) && urlCheck(_obj[key]);
           }
-          _obj[obj[titleArr[colNumber - 1]]] = _obj[key];
+          // _obj[obj[titleArr[colNumber - 1]]] = _obj[key];
         });
         result.push(_obj);
       }
@@ -251,8 +278,40 @@ export class FileController {
       labelObj[item.name] = item.id;
     });
     this.labelList = labelObj;
-    const res = await this.fileService.addQuestion(this.labelList, result, []);
-    console.log('zkf', res);
-    return res;
+    let rightList = [],
+      errMsg = '';
+    result.map((item, index) => {
+      const { id, title, answer, label_id, type } = item;
+      if (!title || !answer || !this.labelList[label_id] || !type) {
+        if (!title) {
+          errMsg += `序号${id} 标题不能为空；`;
+        }
+        if (!answer) {
+          errMsg += `序号${id} 答案不能为空；`;
+        }
+        if (!this.labelList[label_id]) {
+          errMsg += `序号${id} 标签无法在平台找到；`;
+        }
+        if (!type) {
+          errMsg += `序号${id} 题型不能为空；`;
+        }
+      } else {
+        rightList.push(item);
+      }
+    });
+    if (!rightList.length) {
+      return {
+        statusCode: 200,
+        msg: `导入成功${rightList.length}条，失败信息：【${errMsg}】`,
+      };
+    }
+    const res = await this.fileService.addQuestion(this.labelList, rightList);
+    return {
+      ...res,
+      msg:
+        res.statusCode === 500
+          ? res.msg
+          : `导入成功${rightList.length}条，失败信息：【${errMsg}】`,
+    };
   }
 }
